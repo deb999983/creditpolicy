@@ -1,0 +1,7 @@
+django
+django-rest-framework
+django-cors-headers
+markdown
+django-filter
+drf-spectacular
+mysqlclient
