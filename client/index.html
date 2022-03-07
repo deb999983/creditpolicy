@@ -2,28 +2,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> CreditPolicy </title>
     <head>
-
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.0/css/font-awesome.css" rel="stylesheet">
-
-        <link href="js/libs/treant/Treant.css" rel="stylesheet">
-        <link href="css/app.css" rel="stylesheet">
     </head>
-    <body>
+    <body class="w-50 mx-auto" style="border: 1px solid gainsboro;">
         <div id="OrganiseChart-simple">
 
         </div>
+        <nav class="navbar navbar-light bg-light mb-4 d-flex justify-content-between">
+            <a class="navbar-brand" href="#">Credit Policies</a>
+            <a class="btn btn-danger d-flex align-items-center" href="create_policy.html">
+                <i class="fa fa-plus mr-2"> </i>  
+                <span> Add Policy </span>
+            </a>
+        </nav>        
+        
+        <div id="cpListContainer" class="px-5">
+
+        </div>
+
 
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        <script src="js/libs/treant/vendor/raphael.js"></script>
-        <script src="js/libs/treant/vendor/jquery.easing.js"></script>        
-        <script src="js/libs/treant/Treant.js"></script>
-    
-        <script src="js/tree-builder.js"></script>
+        
+        <script src="js/models/condition.js"></script>
+        <script src="js/models/credit-policy.js"></script>
+
         <script src="js/api.js"></script>
-        <script src="js/app.js"></script>
+        <script src="js/list.js"></script>
+
+        <!-- <script src="js/app.js"></script> -->
     </body>
 </html>

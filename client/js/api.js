@@ -9,8 +9,8 @@ var API_CLIENT = {
 		var self = this
 		if (response.status > 204) {
 			return response.json().then(function (error) {
-				alert(error.message);
 				throw error;
+				alert(JSON.stringify(error));
 			})
 		} else {
 			return response.json();
@@ -29,6 +29,17 @@ var API_CLIENT = {
     },
 
 	// ==================== API Calls ============================ //
+
+	createPolicy: function createPolicy(policyData) {
+		var options = {
+			method: 'POST', headers: this.default_headers(), body: JSON.stringify(policyData)
+		}, self = this;
+
+		return fetch(self.base_url + `/policy/policies/`, options).then(function (response) {
+			return self.checkError(response);
+		});
+	},
+
     getPolicies: function getPolicies(token) {
 		var options = {
 			method: 'GET', headers: this.default_headers()
@@ -54,9 +65,7 @@ var API_CLIENT = {
 		var parentId = data["id"], postData = {}, forval=data["forval"];
 		if (data["terminalval"]) {
 			postData["terminal_value"] = data["terminalval"];
-			if (data["terminalval"] == "REJECT") {
-				postData["rejection_reason"] = "Rejected slamlsk"
-			}
+			postData["rejection_reason"] = data["rejection_reason"];
 		}
 		
 		if (data["condition"]) {
@@ -70,5 +79,17 @@ var API_CLIENT = {
 		return fetch(self.base_url + `/policy/conditions/${parentId}/${forval}/child/`, options).then(function (response) {
 			return self.checkError(response);
 		});
+	},
+
+	applyForCredit: function applyForCredit(policyId, policyData) {
+		var options = {
+			method: 'POST', headers: this.default_headers(), body: JSON.stringify({"policy_data": policyData})
+		}, self = this;
+
+		return fetch(self.base_url + `/policy/policies/${policyId}/apply/`, options).then(function (response) {
+			return self.checkError(response);
+		});
 	}
 }
+
+API_CLIENT.init();
