@@ -89,5 +89,14 @@ class ApplyForCreditView(CreateAPIView):
         if not credit_policy.is_complete:
             raise ValidationError("Credit policy is not complete")
 
+        policy_data = serializer.validated_data["policy_data"]
+        policy_attributes = set(credit_policy.attributes.all().values_list('name', flat=True))
+        provided_attributes = set([key if policy_data[key] else None for key in policy_data.keys()])
+
+        missing_attributes = policy_attributes - provided_attributes
+        if missing_attributes:
+            raise ValidationError("Please provide data for {0} attributes".format(",".join(missing_attributes)))
+
+
         result, rejection_reason = credit_policy.evaluate(serializer.validated_data["policy_data"])
         return Response(data={"result": result, "rejection_reason": rejection_reason}, status=201 if not rejection_reason else 400)
