@@ -47,13 +47,9 @@ class PolicyCompleteView(CreateAPIView):
     def perform_create(self, serializer):
         credit_policy: CreditPolicy = self.get_object()
         try:
-            credit_policy.validate()
+            credit_policy.mark_complete()
         except ValueError as e:
             raise ValidationError(e)
-
-        # Mark the credit policy complete, if it is valid.
-        credit_policy.is_complete = True
-        credit_policy.save()
         return credit_policy
 
 
@@ -91,4 +87,4 @@ class ApplyForCreditView(CreateAPIView):
     def perform_create(self, serializer):
         credit_policy = self.get_object()
         result, rejection_reason = credit_policy.evaluate(serializer.validated_data["policy_data"])
-        return Response(data={"result": result, "rejection_reason": rejection_reason})
+        return Response(data={"result": result, "rejection_reason": rejection_reason}, status=201 if not rejection_reason else 400)

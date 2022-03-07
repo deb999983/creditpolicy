@@ -41,3 +41,8 @@ class CreditPolicy(models.Model):
 
 		result, rejected_condition = self.evaluate(data, result)
 		return result, rejected_condition
+
+	def mark_complete(self):
+		self.validate()
+		self.is_complete = True
+		self.save()

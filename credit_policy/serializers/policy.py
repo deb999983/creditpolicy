@@ -50,4 +50,10 @@ class CreditPolicyCreateSerializer(ModelSerializer):
             root_condition['is_root'] = True
             Condition.objects.create(**root_condition)
 
+            # If credit policy is complete then mark it as complete too.
+            try:
+                credit_policy.mark_complete()
+            except Exception as e:
+                pass
+
         return credit_policy

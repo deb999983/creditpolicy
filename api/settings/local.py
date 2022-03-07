@@ -1,3 +1,5 @@
+import os
+
 from . import *
 
 INSTALLED_APPS += [
@@ -28,18 +30,24 @@ SPECTACULAR_SETTINGS = {
 	'DESCRIPTION': 'Your project description',
 	'VERSION': '1.0.0',
 	'SERVE_AUTHENTICATION': None,
-	'SERVE_PERMISSIONS': []
+	'SERVE_PERMISSIONS': [],
 	# OTHER SETTINGS
+
+	'SERVERS': [
+		{"url": "/"},
+		{"url": "/api/dev"},
+		{"url": "/api"},
+	]
 }
 
 
 DATABASES = {
     'default': {
 		'ENGINE': 'django.db.backends.mysql',
-		'HOST': 'localhost',
-		'PORT': '3306',
-		'NAME': 'cp_local',
-		'USER': 'root',
-		'PASSWORD': 'mindfire',
+		'HOST': os.environ.get('MY_DB_HOST', 'localhost'),
+		'PORT': os.environ.get('MY_DB_PORT', '3306'),
+		'NAME': os.environ.get('MY_DB_NAME', 'cp_local',),
+		'USER': os.environ.get('MY_DB_USER', 'root'),
+		'PASSWORD': os.environ.get('MY_DB_PASSWORD', 'mindfire')
 	}
 }

@@ -19,8 +19,8 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('api/swagger/', SpectacularSwaggerSplitView.as_view(), name='swagger'),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger/', SpectacularSwaggerSplitView.as_view(), name='swagger'),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('policy/', include('credit_policy.urls')),
 
 ]

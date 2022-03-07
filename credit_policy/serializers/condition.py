@@ -38,7 +38,7 @@ class ConditionTreeSerializer(serializers.Serializer):
 class ConditionChildCreateSerializer(serializers.Serializer):
     terminal_value = serializers.CharField(required=False)
     condition = ConditionCreateSerializer(required=False)
-    rejection_reason = serializers.CharField(required=False)
+    rejection_reason = serializers.CharField(required=False, allow_blank=True)
 
     def validate(self, attrs):
         terminal_value, condition, rejection_reason = attrs.get('terminal_value'), attrs.get('condition'), attrs.get('rejection_reason')

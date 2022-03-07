@@ -24,12 +24,18 @@ class ConditionCreateView(CreateAPIView):
 			if data.get("terminal_value"):
 				setattr(condition, terminal, data.get("terminal_value"))
 				if terminal_value == "REJECT":
-					condition.rejected_reason = data["rejection_reason"]
+					condition.rejected_reason = data.get("rejection_reason", condition.name + " Failed")
 			else:
 				ExpressionParser.validate(condition.policy, data["condition"]["expression"])
 				child_condition = Condition.objects.create(**data["condition"], policy=condition.policy)
 				setattr(condition, child, child_condition)
 
 			condition.save()
+
+			# Try to mark policy as complete, if each condition has a valid child.
+			try:
+				condition.policy.mark_complete()
+			except ValueError as e:
+				pass
 
 		return condition
