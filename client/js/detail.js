@@ -25,7 +25,9 @@ function applyForCredit() {
         function (response){
             alert("ACCEPT");
         }, function(error) {
-            alert(`REJECT \n${error["rejection_reason"]}`);
+            if (typeof error == "object" && error["rejection_reason"]) {
+                alert(`REJECT \n ${error["rejection_reason"]}`);
+            }
         }
     );
 }

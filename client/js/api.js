@@ -9,8 +9,8 @@ var API_CLIENT = {
 		var self = this
 		if (response.status > 204) {
 			return response.json().then(function (error) {
-				throw error;
 				alert(JSON.stringify(error));
+				throw error;
 			})
 		} else {
 			return response.json();
