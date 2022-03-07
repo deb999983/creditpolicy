@@ -16,5 +16,5 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 ## Run entrypoint.sh
-COPY docker/scripts/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
