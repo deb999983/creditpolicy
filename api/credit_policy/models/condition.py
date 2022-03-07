@@ -2,8 +2,6 @@ import builtins
 import random
 import re
 import string
-from io import BytesIO
-from tokenize import tokenize, NUMBER, STRING, NAME, OP
 
 from django.core.validators import RegexValidator
 from django.db import models

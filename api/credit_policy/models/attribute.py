@@ -1,6 +1,6 @@
 from django.db import models
 
-from credit_policy.models.credit_policy import CreditPolicy
+from credit_policy.models import CreditPolicy
 
 
 class Attribute(models.Model):

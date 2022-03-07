@@ -34,9 +34,9 @@ services:
   api_local:
     image: api_local
     build:
-      context: .
+      context: api
     container_name: api_cp_local
     depends_on:
       - db
     env_file:
-      - ./.env
+      - api/.env

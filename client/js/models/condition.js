@@ -13,12 +13,22 @@ function Node(data, isTerminal, isLeaf) {
 }
 
 function buttonContainer(condition, forval) {
+
+    var buttons = []
+    if (!condition.hasAcceptTerminal()){
+        buttons.push(`<button data-id=${condition.id} data-terminalval="ACCEPT" data-forval=${forval} class="add-child accept"> Accept </button>`);
+    }
+
+    if (!condition.hasRejectTerminal()){
+        buttons.push(`<button data-id=${condition.id} data-terminalval="REJECT" data-forval=${forval} class="add-child reject"> Reject </button>`);
+    }
+
+    buttons.push(`<button data-id=${condition.id} data-condition="CONDITION" data-forval=${forval} class="add-child condition-child" > Add Condition </button>`)
+
     return `
-    <div btn-container>
-        <button data-id=${condition.id} data-terminalval="ACCEPT" data-forval=${forval} class="add-child accept"> Accept </button> 
-        <button data-id=${condition.id} data-terminalval="REJECT" data-forval=${forval} class="add-child reject"> Reject </button> 
-        <button data-id=${condition.id} data-condition="CONDITION" data-forval=${forval} class="add-child condition-child" > Add Condition </button>
-    </div>    
+        <div btn-container>
+            ${buttons.join("\n")}
+        </div>    
     `
 }
 
@@ -81,4 +91,13 @@ Condition.prototype.getTemplate = function () {
     });
 
     return node;
+}
+
+
+Condition.prototype.hasAcceptTerminal = function() {
+    return this.tTerminal == "ACCEPT" || this.fTerminal == "ACCEPT"
+}
+
+Condition.prototype.hasRejectTerminal = function() {
+    return this.tTerminal == "REJECT" || this.fTerminal == "REJECT"
 }
