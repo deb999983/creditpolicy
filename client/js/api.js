@@ -22,7 +22,7 @@ var API_CLIENT = {
 		}
 	},
 	setBaseUrl: function(url) {
-		this.base_url = location.host + "/api"
+		this.base_url = window.location.protocol + "//" + window.location.host + "/api"
 	},
     init: function () {
 		this.setBaseUrl()
