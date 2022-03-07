@@ -22,7 +22,7 @@ var API_CLIENT = {
 		}
 	},
 	setBaseUrl: function(url) {
-		this.base_url = "http://localhost:9050"
+		this.base_url = "http://localhost:9010/api"
 	},
     init: function () {
 		this.setBaseUrl()
