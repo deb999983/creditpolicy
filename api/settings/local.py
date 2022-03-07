@@ -34,8 +34,8 @@ SPECTACULAR_SETTINGS = {
 	# OTHER SETTINGS
 
 	'SERVERS': [
-		{"url": "/"},
-		{"url": "/api/dev"},
+		# {"url": "/"},
+		# {"url": "/api/dev"},
 		{"url": "/api"},
 	]
 }
