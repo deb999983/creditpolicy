@@ -22,8 +22,8 @@ This command does the following things,
 
 #### Remote Urls:
 - **ApiService**: 
-  - http://ec2-13-126-83-49.ap-south-1.compute.amazonaws.com:9010/api/
+  - http://ec2-13-127-98-111.ap-south-1.compute.amazonaws.com:9010/api/swagger/api/
 - **ApiDoc**: Has a description of apis, and the corresponding request and response data 
-  - http://ec2-13-126-83-49.ap-south-1.compute.amazonaws.com:9010/api/swagger/
+  - http://ec2-13-127-98-111.ap-south-1.compute.amazonaws.com:9010/api/swagger/swagger/
 - **Client**:
-  - http://ec2-13-126-83-49.ap-south-1.compute.amazonaws.com:9010/client/
+  - http://ec2-13-127-98-111.ap-south-1.compute.amazonaws.com:9010/api/swagger/client/
