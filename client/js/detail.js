@@ -38,6 +38,15 @@ window.onload = function() {
     var urlParams = new URLSearchParams(location.search);
 
     getPolicyDetail(urlParams.get("id"));
+
+    // hide any open popovers when the anywhere else in the body is clicked
+    $('body').on('click', function (e) {
+        $('[data-toggle=popover]').each(function () {
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
+    });
 }
 
 
@@ -47,90 +56,9 @@ function getPolicyDetail(policyId) {
         currentPolicy = policy;
 
         $("#detailContainer").append(policy.getDetailHtml());
-        
+
         buildTreeConfig(policy.conditionTree);
-
-        $('.add-child').off("click.add-child");
-
-        $('.add-child.accept').on("click.add-child", function (event) {
-            console.log(event);
-            addConditionChild(event.currentTarget.dataset);
-        });
-
-
-        $('.add-child.condition-child').popover({
-            container: 'body',
-            content: function() {
-                var data = $(this).data();
-                return `
-                    <div class="form-group">
-                        <input type="text" name="conditionName" class="form-control" placeholder="Condition Name">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="conditionExpression" class="form-control" placeholder="Expression">
-                    </div>
-                    <button data-id=${data['id']} data-forval=${data['forval']} class="btn btn-primary condition-submit">Submit</button>
-                `
-            },  
-            html: true
-        })        
-        $('.add-child.condition-child').on('shown.bs.popover', function () {
-            $(".condition-submit").on('click.condition-submit', function (event) {
-                var conditionName = $('[name="conditionName"]').val();
-                var conditionExpression = $('[name="conditionExpression"]').val();
-
-                var params = $(this).data();
-                var data = {
-                    "id": params["id"], 
-                    "forval": params["forval"],
-                    "condition": {"name": conditionName, "expression": conditionExpression}
-                }
-                
-                console.log(data)
-                addConditionChild(data);
-                
-                $('.add-child.condition-child').popover('hide');
-            });    
-        })       
-        $('.add-child.condition').on('hidden.bs.popover', function () {
-            $(".condition-submit").off('click.condition-submit');
-        })       
-        
-        $('.add-child.reject').popover({
-            container: 'body',
-            content: function() {
-                var data = $(this).data();
-                return `
-                    <div class="form-group">
-                        <input type="text" name="conditionRejectionReason" class="form-control" placeholder="RejectionReason">
-                    </div>
-                    <button data-id=${data['id']} data-forval=${data['forval']} class="btn btn-primary rejection-submit">Submit</button>
-                `
-            },
-            html: true            
-        })
-
-        $('.add-child.reject').on('shown.bs.popover', function () {
-            $(".rejection-submit").on('click.reject', function (event) {
-                var rejectionReason = $('[name="conditionRejectionReason"]').val();
-
-                var params = $(this).data();
-                var data = {
-                    "id": params["id"], 
-                    "forval": params["forval"],
-                    "terminalval": "REJECT",
-                    "rejection_reason": rejectionReason
-                }
-                
-                console.log(data)
-                addConditionChild(data);
-                
-                $('.add-child.reject').popover('hide');
-            });    
-        })       
-        $('.add-child.reject').on('hidden.bs.popover', function () {
-            $(".rejection-submit").off('click.reject');
-        })          
+        Condition.bindEvents();
 
         $('#applyForCreditModal').on('shown.bs.modal', function (e) {
             policy.setApplyCreditForm();

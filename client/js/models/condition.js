@@ -20,17 +20,101 @@ function buttonContainer(condition, forval) {
     }
 
     if (!condition.hasRejectTerminal()){
-        buttons.push(`<button data-id=${condition.id} data-terminalval="REJECT" data-forval=${forval} class="add-child reject"> Reject </button>`);
+        buttons.push(`<button data-id=${condition.id} data-terminalval="REJECT" data-forval=${forval} data-toggle=popover class="add-child reject"> Reject </button>`);
     }
 
-    buttons.push(`<button data-id=${condition.id} data-condition="CONDITION" data-forval=${forval} class="add-child condition-child" > Add Condition </button>`)
+    buttons.push(`<button data-id=${condition.id} data-condition="CONDITION" data-forval=${forval} data-toggle=popover class="add-child condition-child" > Add Condition </button>`)
 
-    return `
-        <div btn-container>
+    var template = `
+        <div class="btn-container">
             ${buttons.join("\n")}
         </div>    
     `
+
+    var container = {
+        template: template,
+        bindEvents: function () {
+
+        }
+    }
+    return container;
 }
+
+
+function addConditionChildContainer(id, forval) {
+    var template = `
+        <div class="form-group">
+            <input type="text" name="conditionName" class="form-control" placeholder="Condition Name">
+        </div>
+        <div class="form-group">
+            <input type="text" name="conditionExpression" class="form-control" placeholder="Expression">
+        </div>
+        <button data-id=${id} data-forval=${forval} class="btn btn-primary condition-submit">Submit</button>
+    `
+    return template;
+}
+
+
+function bindAddConditionChildEvents() {
+    $('.add-child.condition-child').on('shown.bs.popover', function () {
+        $(".condition-submit").on('click.condition-submit', function (event) {
+            var conditionName = $('[name="conditionName"]').val();
+            var conditionExpression = $('[name="conditionExpression"]').val();
+
+            var params = $(this).data();
+            var data = {
+                "id": params["id"], 
+                "forval": params["forval"],
+                "condition": {"name": conditionName, "expression": conditionExpression}
+            }
+            
+            console.log(data)
+            addConditionChild(data);
+            
+            $('.add-child.condition-child').popover('hide');
+        });    
+    })   
+    $('.add-child.condition').on('hidden.bs.popover', function () {
+        $(".condition-submit").off('click.condition-submit');
+    })              
+}
+
+
+function rejectionReasonContainer(id, forval) {
+    var template = `
+        <div class="form-group">
+            <input type="text" name="conditionRejectionReason" class="form-control" placeholder="RejectionReason">
+        </div>
+        <button data-id=${id} data-forval=${forval} class="btn btn-primary rejection-submit">Submit</button>
+    `
+
+    return template 
+}
+
+function bindRejectionReasonEvents() {
+    $('.add-child.reject').on('shown.bs.popover', function () {
+        $(".rejection-submit").on('click.reject', function (event) {
+            var rejectionReason = $('[name="conditionRejectionReason"]').val();
+
+            var params = $(this).data();
+            var data = {
+                "id": params["id"], 
+                "forval": params["forval"],
+                "terminalval": "REJECT",
+                "rejection_reason": rejectionReason
+            }
+            
+            console.log(data)
+            addConditionChild(data);
+            
+            $('.add-child.reject').popover('hide');
+        });    
+    })       
+    $('.add-child.reject').on('hidden.bs.popover', function () {
+        $(".rejection-submit").off('click.reject');
+    })   
+}
+
 
 
 function Condition(conditionData) {
@@ -53,17 +137,24 @@ Condition.prototype.getTemplate = function () {
     var node = {
         innerHTML: Node(this.expression),
         HTMLid: self.id,
-		children: []
+		children: [],
+        context: self,
+        onAdded: null
 	};
 
     if (!self.tChild && !self.tTerminal) { 
         var forval = true
-        self.tTerminal = buttonContainer(self, forval);
-        }
+        var btnContainer = buttonContainer(self, forval)
+
+        self.tTerminal = btnContainer.template;
+        node.onAdded = btnContainer.bindEvents;
+    }
     
     if (!self.fChild && !self.fTerminal) {
         var forval = false
-        self.fTerminal = buttonContainer(self, forval);
+        var btnContainer = buttonContainer(self, forval);
+        self.fTerminal = btnContainer.template;
+        node.onAdded = btnContainer.bindEvents;
     } 
 
     var tChilds = ["tChild", "tTerminal"];
@@ -100,4 +191,32 @@ Condition.prototype.hasAcceptTerminal = function() {
 
 Condition.prototype.hasRejectTerminal = function() {
     return this.tTerminal == "REJECT" || this.fTerminal == "REJECT"
+}
+
+Condition.bindEvents = function () {
+    $('.add-child').off("click.add-child");
+
+    $('.add-child.accept').on("click.add-child", function (event) {
+        addConditionChild(event.currentTarget.dataset);
+    });           
+    
+    $('.add-child.condition-child').popover({
+        container: 'body',
+        content: function() {
+            var data = $(this).data();
+            return addConditionChildContainer(data.id, data.forval);
+        },  
+        html: true
+    });
+    bindAddConditionChildEvents();
+    
+    $('.add-child.reject').popover({
+        container: 'body',
+        content: function() {
+            var data = $(this).data();
+            return rejectionReasonContainer(data.id, data.forval);
+        },
+        html: true            
+    })
+    bindRejectionReasonEvents();
 }
