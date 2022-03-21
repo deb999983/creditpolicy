@@ -4,7 +4,7 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 
 from credit_policy.models import CreditPolicy, Attribute
-from credit_policy.serializers import CreditPolicySerializer, CreditPolicyCreateSerializer
+from credit_policy.serializers import CreditPolicySerializer, CreditPolicyCreateSerializer, ConditionSerializer
 from credit_policy.serializers.policy import AttributeSerializer
 from utils.views.generics import ListCreateAPIView, CreateAPIView, UpdateAPIView
 
@@ -47,7 +47,7 @@ class PolicyCompleteView(CreateAPIView):
     def perform_create(self, serializer):
         credit_policy: CreditPolicy = self.get_object()
         try:
-            credit_policy.mark_complete()
+            credit_policy.check_completeness()
         except ValueError as e:
             raise ValidationError(e)
         return credit_policy
@@ -97,6 +97,13 @@ class ApplyForCreditView(CreateAPIView):
         if missing_attributes:
             raise ValidationError("Please provide data for {0} attributes".format(",".join(missing_attributes)))
 
-
-        result, rejection_reason = credit_policy.evaluate(serializer.validated_data["policy_data"])
-        return Response(data={"result": result, "rejection_reason": rejection_reason}, status=201 if not rejection_reason else 400)
+        result, rejection_reason, condition_path = credit_policy.evaluate(serializer.validated_data["policy_data"])
+        return Response(
+            data={
+                "result": result,
+                "rejection_reason": rejection_reason,
+                "condition_path": list(map(
+                    lambda c: {"id": c.id, "name": c.name, "expression": c.expression, "result": c.result} if type(c) is not str else c, condition_path
+                ))
+            }, status=201 if not rejection_reason else 400
+        )

@@ -7,9 +7,16 @@ var API_CLIENT = {
 	},
 	checkError: function (response) {
 		var self = this
+		if (response.status == 204) {
+			return response;
+		}
 		if (response.status > 204) {
 			return response.json().then(function (error) {
-				alert(JSON.stringify(error));
+				setTimeout(function() {
+					if (!error.handled) {
+						alert(JSON.stringify(error));
+					}
+				});
 				throw error;
 			})
 		} else {
@@ -22,8 +29,8 @@ var API_CLIENT = {
 		}
 	},
 	setBaseUrl: function(url) {
-		this.base_url = window.location.protocol + "//" + window.location.host + "/api"
-		// this.base_url = "http://localhost:9050"
+		// this.base_url = window.locaqtion.protocol + "//" + window.location.host + "/api"
+		this.base_url = "http://localhost:9050"
 	},
     init: function () {
 		this.setBaseUrl()
@@ -90,6 +97,22 @@ var API_CLIENT = {
 		return fetch(self.base_url + `/policy/policies/${policyId}/apply/`, options).then(function (response) {
 			return self.checkError(response);
 		});
+	},
+
+	removeCondition: function(conditionId, terminal) {
+		var self = this;
+		if (!terminal) {
+			return fetch(self.base_url + `/policy/conditions/${conditionId}/`, {
+				method: "DELETE", headers: this.default_headers()
+			}).then(function (r) { return self.checkError(r) });
+		}
+
+		var data = (terminal == 'tTerminal') ? {'t_terminal': null} : {'f_terminal': null, 'rejection_reason': null};
+
+		return fetch(self.base_url + `/policy/conditions/${conditionId}/`, {
+			method: "PATCH", headers: this.default_headers(), body: JSON.stringify(data)
+		}).then(function (r) {return self.checkError(r)});
+
 	}
 }
 

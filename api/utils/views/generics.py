@@ -19,4 +19,5 @@ class CreateAPIView(mixins.CreateModelMixin, GenericAPIView):
 
 class UpdateAPIView(mixins.UpdateModelMixin, GenericAPIView):
     def patch(self, request, *args, **kwargs):
+        kwargs['partial'] = True
         return self.update(request, *args, **kwargs)

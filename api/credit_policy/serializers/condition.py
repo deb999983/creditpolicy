@@ -51,3 +51,9 @@ class ConditionChildCreateSerializer(serializers.Serializer):
             raise ValidationError("Please set a rejection reason, for the condition")
 
         return attrs
+
+
+class ConditionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('name', 'expression', 'rejected_reason', 't_terminal', 'f_terminal',)
+        model = Condition

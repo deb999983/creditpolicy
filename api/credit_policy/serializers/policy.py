@@ -52,7 +52,7 @@ class CreditPolicyCreateSerializer(ModelSerializer):
 
             # If credit policy is complete then mark it as complete too.
             try:
-                credit_policy.mark_complete()
+                credit_policy.check_completeness()
             except Exception as e:
                 pass
 

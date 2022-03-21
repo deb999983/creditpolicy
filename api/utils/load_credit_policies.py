@@ -41,7 +41,7 @@ def create_credit_policies():
         prm.f_child = age
         prm.save()
 
-        cp.mark_complete()
+        cp.check_completeness()
 
         # Add an incomplete policy
         cp = CreditPolicy.objects.create(name="Bank Policy 101")

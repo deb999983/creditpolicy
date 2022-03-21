@@ -1,8 +1,11 @@
-function Node(data, isTerminal, isLeaf) {
+function Node(data, terminal, condition) {
     var node = `
         <div class="condition-container">
+            <div data-id="${condition.id}" data-terminal=${terminal} class="remove-condition ${(!terminal) || (condition.showTRemove && terminal == 'tTerminal')  || (terminal == 'fTerminal' && condition.showFRemove) ? '': 'd-none'}">
+                <i class="fa fa-times-circle"></i>
+            </div>
             <div class="condition"> ${data} </div>
-            <div class="tf-indicator ${isTerminal ? 'd-none': ''}">
+            <div class="tf-indicator ${terminal ? 'd-none': ''}">
                 <div class="true"> T </div>
                 <div class="false"> F </div>
             </div>
@@ -31,13 +34,7 @@ function buttonContainer(condition, forval) {
         </div>    
     `
 
-    var container = {
-        template: template,
-        bindEvents: function () {
-
-        }
-    }
-    return container;
+    return template;
 }
 
 
@@ -134,27 +131,26 @@ function Condition(conditionData) {
 
 Condition.prototype.getTemplate = function () {
     var self = this;
+    self.showTRemove = true;
+    self.showFRemove = true;
+
     var node = {
-        innerHTML: Node(this.expression),
+        innerHTML: Node(this.expression, false, this),
         HTMLid: self.id,
 		children: [],
         context: self,
         onAdded: null
-	};
-
+	};    
     if (!self.tChild && !self.tTerminal) { 
         var forval = true
-        var btnContainer = buttonContainer(self, forval)
-
-        self.tTerminal = btnContainer.template;
-        node.onAdded = btnContainer.bindEvents;
+        self.tTerminal = buttonContainer(self, forval);
+        self.showTRemove = false;
     }
     
     if (!self.fChild && !self.fTerminal) {
         var forval = false
-        var btnContainer = buttonContainer(self, forval);
-        self.fTerminal = btnContainer.template;
-        node.onAdded = btnContainer.bindEvents;
+        self.fTerminal = buttonContainer(self, forval);
+        self.showFRemove = false;
     } 
 
     var tChilds = ["tChild", "tTerminal"];
@@ -167,7 +163,7 @@ Condition.prototype.getTemplate = function () {
         if (tchild == "tChild")
             node.children.push(self[tchild].getTemplate());
         else 
-            node.children.push({innerHTML: Node(self[tchild], true), children: []})
+            node.children.push({innerHTML: Node(self[tchild], tchild, self), children: []})
     });
 
         
@@ -178,7 +174,7 @@ Condition.prototype.getTemplate = function () {
         if (fchild == "fChild")
             node.children.push(self[fchild].getTemplate());
         else 
-            node.children.push({innerHTML: Node(self[fchild], true), children: []})
+            node.children.push({innerHTML: Node(self[fchild], fchild, self), children: []})
     });
 
     return node;
@@ -195,6 +191,7 @@ Condition.prototype.hasRejectTerminal = function() {
 
 Condition.bindEvents = function () {
     $('.add-child').off("click.add-child");
+    $('.remove-condition').off('click.remove');
 
     $('.add-child.accept').on("click.add-child", function (event) {
         addConditionChild(event.currentTarget.dataset);
@@ -219,4 +216,12 @@ Condition.bindEvents = function () {
         html: true            
     })
     bindRejectionReasonEvents();
+
+    $('.remove-condition').on('click.remove', function(event) {
+        var data = $(this).data();
+        console.log("To Remove Condition:", data.id);
+        API_CLIENT.removeCondition(data.id, data.terminal).then(function() {
+            location.reload();
+        });
+    });
 }

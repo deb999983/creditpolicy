@@ -32,17 +32,28 @@ class CreditPolicy(models.Model):
 
 	def evaluate(self, data, condition=None):
 		condition = condition or self.root_condition
-		result = condition.evaluate(data)
+		val, result = condition.evaluate(data)
+
+		condition.result = val
+		condition_path = [condition]
 		if result == "ACCEPT":
-			return result, None
+			condition_path.append(result)
+			return result, None, condition_path
 
 		if result == "REJECT":
-			return result, condition.rejected_reason
+			condition_path.append(result)
+			return result, condition.rejected_reason, condition_path
 
-		result, rejected_condition = self.evaluate(data, result)
-		return result, rejected_condition
+		result, rejected_condition, path = self.evaluate(data, result)
+		condition_path.extend(path)
+		return result, rejected_condition, condition_path
 
-	def mark_complete(self):
-		self.validate()
-		self.is_complete = True
-		self.save()
+	def check_completeness(self):
+		try:
+			self.validate()
+			self.is_complete = True
+			self.save()
+		except ValueError as e:
+			self.is_complete = False
+			self.save()
+

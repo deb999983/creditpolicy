@@ -11,7 +11,7 @@
 .condition-container {
     display: flex;
     min-width: 300px;
-    height: 50px;
+    height: 60px;
     border: 1px solid black;
     flex-direction: column;
 }
@@ -21,6 +21,7 @@
     flex-grow: 1;
     align-items: center;
     justify-content: center;
+    padding: 0 10px;
 }
 
 .condition-container > .tf-indicator {
@@ -41,4 +42,12 @@
 
 .tf-indicator > .false {
     background-color: red;
+}
+
+
+.remove-condition {
+    position: absolute;
+    top: -7px;
+    right: -6px;
+    background: white;
 }

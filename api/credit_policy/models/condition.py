@@ -62,9 +62,9 @@ class Condition(models.Model):
 		expression = expression.safe_substitute(data)
 		r = eval(expression)
 		if r:
-			return self.t_terminal if self.t_terminal else self.t_child
+			return r, self.t_terminal if self.t_terminal else self.t_child
 		else:
-			return self.f_terminal if self.f_terminal else self.f_child
+			return r, self.f_terminal if self.f_terminal else self.f_child
 
 
 class ExpressionParser:

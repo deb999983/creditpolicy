@@ -1,4 +1,5 @@
-from .condition import ConditionTreeSerializer, ConditionSerializer, ConditionCreateSerializer
+from .condition import ConditionTreeSerializer, ConditionSerializer, ConditionCreateSerializer, \
+	ConditionUpdateSerializer
 from .policy import CreditPolicySerializer, CreditPolicyCreateSerializer
 
 
