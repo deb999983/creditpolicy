@@ -1,7 +1,7 @@
 from django.urls import re_path
 from . import views
 
-# Define the url patterns
+# Update the url patterns
 
 urlpatterns = [
     re_path(r'^policies/$', views.PolicyListCreateView.as_view(), name='policy-list-create'),
