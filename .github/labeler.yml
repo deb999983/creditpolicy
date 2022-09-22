@@ -1,2 +1,3 @@
+# Add 'api' to any changes within 'api' folder or any subfolders
 api:
-- *
+- api/**/*
