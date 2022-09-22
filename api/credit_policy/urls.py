@@ -1,6 +1,8 @@
 from django.urls import re_path
 from . import views
 
+# Define the url patterns
+
 urlpatterns = [
     re_path(r'^policies/$', views.PolicyListCreateView.as_view(), name='policy-list-create'),
     re_path(r'^policies/(?P<pk>\d+)/$', views.PolicyDetailView.as_view(), name='policy-list-create'),
