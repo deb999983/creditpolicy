@@ -29,8 +29,8 @@ var API_CLIENT = {
 		}
 	},
 	setBaseUrl: function(url) {
-		// this.base_url = window.locaqtion.protocol + "//" + window.location.host + "/api"
-		this.base_url = "http://localhost:9050"
+		this.base_url = window.locaqtion.protocol + "//" + window.location.host + "/api"
+		//this.base_url = "http://localhost:9050"
 	},
     init: function () {
 		this.setBaseUrl()
